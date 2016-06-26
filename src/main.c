@@ -30,6 +30,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "blink.h"
+#include "debug.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -50,6 +51,7 @@
 int main(void)
 {
 	Blink_Init();
+	DEBUG_Init();
 
 	// Start the scheduler
 	vTaskStartScheduler();
