@@ -64,6 +64,14 @@ PROJECT_SOURCE			+=	croutine.c						\
 							tasks.c							\
 							timers.c
 
+# FreeRTOS-CLI
+VPATH					+=  $(TOP)/lib/FreeRTOS-Plus-CLI
+
+PROJECT_INC_PATHS		+=	-I$(TOP)/lib/FreeRTOS-Plus-CLI
+
+PROJECT_SOURCE			+=	FreeRTOS_CLI.c
+
+
 # General project files
 VPATH					+=	$(TOP)/src						\
                              
@@ -74,7 +82,7 @@ PROJECT_SOURCE			+=	stm32f4xx_it.c					\
 							main.c							\
 							blink.c							\
 							debug.c							\
-
+							console.c						\
 
 MCU_CC_FLAGS = $(CORTEX_M4_HWFP_CC_FLAGS)
 MCU_LIB_PATH = $(CORTEX_M4_HWFP_LIB_PATH)
@@ -92,6 +100,11 @@ PROJECT_DOXYGEN_CONFIG = config.doxyfile
 PROJECT_OPENOCD_CONFIG = board/st_nucleo_f4.cfg
 
 sinclude $(TOP)/common.mk
+
+# Force to update the builded time in console.c
+obj/console.o : force
+
+obj/console.c.d : inc/gitversion.h
 
 inc/gitversion.h: .git/HEAD .git/index
 	@echo -e "#define GIT_VERSION\t\t\"$(shell git rev-parse --short HEAD)\"" > $@

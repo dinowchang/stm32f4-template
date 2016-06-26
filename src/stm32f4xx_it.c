@@ -29,7 +29,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
-#include "main.h"
+#include "config.h"
+#include "debug.h"
+#include "console.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -158,6 +160,48 @@ __attribute__((weak)) void SysTick_Handler(void)
 /*void PPP_IRQHandler(void)
 {
 }*/
+
+#if DEBUG_PORT == DEBUG_PORT_USART2
+/**
+ * @brief  USART2 interrupt handler
+ */
+void USART2_IRQHandler(void)
+{
+	char data;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+	while (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
+	{
+#if TEST_USART_RX_ECHO
+		data = USART_ReceiveData(USART2);
+		USART_SendData(USART2, data);
+		while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+#else
+		data = USART_ReceiveData(USART2);
+		xQueueSendFromISR(xConsoleQueue, &data, &xHigherPriorityTaskWoken);
+#endif
+	}
+}
+
+#elif DEBUG_PORT == DEBUG_PORT_USART3
+/**
+ * @brief  USART3 interrupt handler
+ */
+void USART3_IRQHandler(void)
+{
+	while (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
+	{
+#if TEST_USART_RX_ECHO
+		char data = USART_ReceiveData(USART3);
+		USART_SendData(USART3, data);
+		while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);
+#else
+		data = USART_ReceiveData(USART3);
+		xQueueSendFromISR(xConsoleQueue, &data, &xHigherPriorityTaskWoken);
+#endif
+	}
+}
+#endif
+
 
 /**
   * @}

@@ -26,11 +26,11 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "blink.h"
 #include "debug.h"
+#include "console.h"
+#include "blink.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -50,8 +50,12 @@
   */
 int main(void)
 {
-	BLINK_Init();
+	// Initialize system
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+
 	DEBUG_Init();
+	CONSOLE_Init();
+	BLINK_Init();
 
 	// Start the scheduler
 	vTaskStartScheduler();
