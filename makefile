@@ -71,6 +71,7 @@ PROJECT_INC_PATHS		+=	-I$(TOP)/inc					\
 
 PROJECT_SOURCE			+=	stm32f4xx_it.c					\
 							main.c							\
+							blink.c							\
 
 
 MCU_CC_FLAGS = $(CORTEX_M4_HWFP_CC_FLAGS)
