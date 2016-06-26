@@ -57,7 +57,7 @@ PROJECT_INC_PATHS		+=	-I$(TOP)/lib/FreeRTOS/inc
 
 PROJECT_SOURCE			+=	croutine.c						\
 							event_groups.c					\
-							heap_1.c						\
+							heap_2.c						\
 							list.c							\
 							port.c							\
 							queue.c							\

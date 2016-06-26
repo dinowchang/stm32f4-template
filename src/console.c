@@ -31,12 +31,12 @@
 #define CONSOLE_TASK_PRIORITY					( tskIDLE_PRIORITY + 2UL )
 #define CONSOLE_TASK_STACK						( 2048/4 ) 							// 2048 bytes
 #define CONSOLE_QUEUE_LENGTH					16
-#define MAX_INPUT_SIZE						64
+#define MAX_INPUT_SIZE							64
 
-#define DBG_COMM							TRUE
+#define DBG_CONSOLE								TRUE
 
-#define CHAR_ASCII_DEL						( 0x7F ) 							// DEL acts as a backspace.
-#define CHAR_ASCII_ESC						( 0x1B ) 							// ESCAPE Key
+#define CHAR_ASCII_DEL							( 0x7F ) 							// DEL acts as a backspace.
+#define CHAR_ASCII_ESC							( 0x1B ) 							// ESCAPE Key
 
 /* Private macro -------------------------------------------------------------*/
 
@@ -114,9 +114,9 @@ static void CONSOLE_Task( void *pvParameters )
 	BaseType_t ret;
 
 	outputString = FreeRTOS_CLIGetOutputBuffer();
-	DEBUG_printf(DBG_COMM, "\nBuild on %s at %s. ", __DATE__, __TIME__);
-	DEBUG_printf(DBG_COMM, "Git Version : %s\n", GIT_VERSION);
-	DEBUG_printf(DBG_COMM, "%s", pcWelcomeMessage);
+	DEBUG_printf(DBG_CONSOLE, "\nBuild on %s at %s. ", __DATE__, __TIME__);
+	DEBUG_printf(DBG_CONSOLE, "Git Version : %s\n", GIT_VERSION);
+	DEBUG_printf(DBG_CONSOLE, "%s", pcWelcomeMessage);
 	fflush(stdout);
 
 	while (1)
@@ -125,7 +125,7 @@ static void CONSOLE_Task( void *pvParameters )
 
 		if (data == '\r')
 		{
-			DEBUG_printf(DBG_COMM, "\n");
+			DEBUG_printf(DBG_CONSOLE, "\n");
 
 			// See if the command is empty, indicating that the last command is to be executed again.
 			if (inputIndex == 0)
@@ -139,7 +139,7 @@ static void CONSOLE_Task( void *pvParameters )
 				ret = FreeRTOS_CLIProcessCommand(inputString, outputString, configCOMMAND_INT_MAX_OUTPUT_SIZE);
 
 				// Write the generated string to the UART.
-				DEBUG_printf(DBG_COMM, "%s\n", outputString);
+				DEBUG_printf(DBG_CONSOLE, "%s\n", outputString);
 
 			} while (ret != pdFALSE);
 
@@ -147,7 +147,7 @@ static void CONSOLE_Task( void *pvParameters )
 			inputIndex = 0;
 			memset(inputString, 0x00, MAX_INPUT_SIZE);
 
-			DEBUG_printf(DBG_COMM, "%s", pcEndOfOutputMessage);
+			DEBUG_printf(DBG_CONSOLE, "%s", pcEndOfOutputMessage);
 			fflush(stdout);
 
 		}
@@ -172,11 +172,11 @@ static void CONSOLE_Task( void *pvParameters )
 					{
 						inputIndex--;
 						inputString[inputIndex] = '\0';
-						DEBUG_printf(DBG_COMM, "\b \b");
+						DEBUG_printf(DBG_CONSOLE, "\b \b");
 						fflush(stdout);
 					}
 					strcpy(inputString, lastInputString);
-					DEBUG_printf(DBG_COMM, "%s", inputString);
+					DEBUG_printf(DBG_CONSOLE, "%s", inputString);
 					inputIndex = strlen(inputString);
 					fflush(stdout);
 				}
@@ -193,7 +193,7 @@ static void CONSOLE_Task( void *pvParameters )
 			{
 				inputIndex--;
 				inputString[inputIndex] = '\0';
-				DEBUG_printf(DBG_COMM, "\b \b");
+				DEBUG_printf(DBG_CONSOLE, "\b \b");
 				fflush(stdout);
 			}
 		}
@@ -203,7 +203,7 @@ static void CONSOLE_Task( void *pvParameters )
 			{
 				inputString[inputIndex] = data;
 				inputIndex++;
-				DEBUG_printf(DBG_COMM, "%c", data);
+				DEBUG_printf(DBG_CONSOLE, "%c", data);
 				fflush(stdout);
 			}
 		}
@@ -227,7 +227,7 @@ void CONSOLE_Init(void)
 
 	// Create that task that handles the console itself.
 	xTaskCreate( 	CONSOLE_Task,				/* The task that implements the command console. */
-					"CLI",						/* Text name assigned to the task.  This is just to assist debugging.  The kernel does not use this name itself. */
+					"CONSOLE",					/* Text name assigned to the task.  This is just to assist debugging.  The kernel does not use this name itself. */
 					CONSOLE_TASK_STACK,			/* The size of the stack allocated to the task. */
 					NULL,						/* The parameter is not used, so NULL is passed. */
 					CONSOLE_TASK_PRIORITY,		/* The priority allocated to the task. */

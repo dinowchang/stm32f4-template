@@ -108,6 +108,18 @@ void vApplicationMallocFailedHook( void )
 	to query the size of free heap space that remains (although it does not
 	provide information on how the remaining heap might be fragmented). */
 	taskDISABLE_INTERRUPTS();
+
+	char *ptr;
+	char msg[] = "Malloc failed !!!!\n";
+
+	ptr = msg;
+
+	while( *ptr != '\0')
+	{
+		DEBUG_SendData(*ptr);
+		ptr++;
+	}
+
 	for( ;; );
 }
 /*-----------------------------------------------------------*/
@@ -128,13 +140,31 @@ void vApplicationIdleHook( void )
 
 void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
 {
-	( void ) pcTaskName;
-	( void ) pxTask;
-
 	/* Run time stack overflow checking is performed if
 	configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
 	function is called if a stack overflow is detected. */
 	taskDISABLE_INTERRUPTS();
+
+	char *ptr;
+	char msg[] = " stack overflow !!!!\n";
+
+	ptr = pcTaskName;
+
+	while( *ptr != '\0')
+	{
+		DEBUG_SendData(*ptr);
+		ptr++;
+	}
+
+	ptr = msg;
+
+	while( *ptr != '\0')
+	{
+		DEBUG_SendData(*ptr);
+		ptr++;
+	}
+
+	for( ;; );
 	for( ;; );
 }
 /*-----------------------------------------------------------*/
