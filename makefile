@@ -50,6 +50,20 @@ PROJECT_SOURCE			+=	misc.c                       \
 #							stm32f4xx_syscfg.c           \
 #							stm32f4xx_wwdg.c             \
 
+# FreeRTOS
+VPATH					+=  $(TOP)/lib/FreeRTOS/src
+
+PROJECT_INC_PATHS		+=	-I$(TOP)/lib/FreeRTOS/inc
+
+PROJECT_SOURCE			+=	croutine.c						\
+							event_groups.c					\
+							heap_1.c						\
+							list.c							\
+							port.c							\
+							queue.c							\
+							tasks.c							\
+							timers.c
+
 # General project files
 VPATH					+=	$(TOP)/src						\
                              
