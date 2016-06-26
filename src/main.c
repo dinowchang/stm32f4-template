@@ -50,7 +50,7 @@
   */
 int main(void)
 {
-	Blink_Init();
+	BLINK_Init();
 	DEBUG_Init();
 
 	// Start the scheduler

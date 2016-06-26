@@ -58,7 +58,7 @@ __INLINE void LED_Off(void)
  *
  * @param pvParameters
  */
-static void Blink_Task( void *pvParameters )
+static void BLINK_Task( void *pvParameters )
 {
 	TickType_t xLastFlashTime;
 
@@ -76,7 +76,7 @@ static void Blink_Task( void *pvParameters )
 	}
 }
 
-void Blink_Init(void)
+void BLINK_Init(void)
 {
-	xTaskCreate( Blink_Task, "LED", configMINIMAL_STACK_SIZE, NULL, BLINK_TASK_PRIORITY, NULL );
+	xTaskCreate( BLINK_Task, "LED", configMINIMAL_STACK_SIZE, NULL, BLINK_TASK_PRIORITY, NULL );
 }

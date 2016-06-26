@@ -25,6 +25,6 @@
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions ------------------------------------------------------- */
-void Blink_Init(void);
+void BLINK_Init(void);
 
 #endif /* __INC_BLINK_H_ */
