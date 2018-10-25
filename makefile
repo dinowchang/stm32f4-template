@@ -102,9 +102,7 @@ PROJECT_OPENOCD_CONFIG = board/st_nucleo_f4.cfg
 sinclude $(TOP)/common.mk
 
 # Force to update the builded time in console.c
-obj/console.o : force
-
-obj/console.c.d : inc/gitversion.h
+obj/console.o : inc/gitversion.h force
 
 inc/gitversion.h: .git/HEAD .git/index
 	@echo -e "#define GIT_VERSION\t\t\"$(shell git rev-parse --short HEAD)\"" > $@

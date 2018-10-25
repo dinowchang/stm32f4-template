@@ -111,7 +111,7 @@ LFLAGS				= $(MCU_CC_FLAGS) -L$(MCU_LIB_PATH) $(SYS_LIBRARIES) $(SYS_LD_FLAGS) -
 .PHONY:    all clean depends force flash document dis openocd
 
 all:$(TARGET)
-$(TARGET):$(DEPENDS_S) $(DEPENDS_C) $(OBJECT_S) $(OBJECT_C) $(PROJECT_LIBRARY)
+$(TARGET):$(OBJECT_S) $(OBJECT_C) $(PROJECT_LIBRARY)
 	@$(ECHO)
 	@$(MKDIR) -p bin
 	@$(ECHO) Linking...
@@ -123,28 +123,19 @@ dis:
 	@$(ECHO) disassemble $(PROGRAM).dis
 	@$(OBJDUMP) -d $(PROGRAM).elf > $(PROGRAM).dis
 
-obj/%.o : obj/%.c.d $(MAKEALL_DEPEND)    
-obj/%.o : obj/%.s.d $(MAKEALL_DEPEND)    
+-include $(DEPENDS_C) $(DEPENDS_S)
 
-obj/%.o: %.c
-	@$(MKDIR) -p obj
-	@$(ECHO) c compile $<
-	@$(CC) $(CFLAGS) -c -o $@ $<
+obj/%.o: %.c $(MAKEALL_DEPEND)
+	@$(ECHO) compile $<
+	@$(MKDIR) -p ./obj
+	@$(CC) $(CFLAGS) -MM -MT $@ -o $(addsuffix .c.d, $(basename $@)) $<
+	@$(CC) -c $(CFLAGS) -o $@ $<
 
-obj/%.o: %.s
-	@$(MKDIR) -p obj
+obj/%.o: %.s $(MAKEALL_DEPEND)
 	@$(ECHO) assemble $<
+	@$(MKDIR) -p obj
+	@$(CC) $(CFLAGS) -MM -MT $@ -o $(addsuffix .s.d, $(basename $@)) $<
 	@$(AS) $(AFLAGS) -o $@ $< > $(addsuffix .lst,$(basename $@))
-    
-obj/%.s.d : %.s $(MAKEALL_DEPEND)
-	@$(MKDIR) -p obj
-	@$(ECHO) s mkdep $<
-	@$(CC) $(AFLAGS) -MM -MT $(patsubst %.s.d,%.o,$@) $< > $(addsuffix .d,$(basename $@))
-
-obj/%.c.d : %.c $(MAKEALL_DEPEND)
-	@$(MKDIR) -p obj
-	@$(ECHO) c mkdep $<
-	@$(CC) $(CFLAGS) -MM -MT $(patsubst %.c.d,%.o,$@) $< > $(addsuffix .d,$(basename $@))
 
 clean:
 	@$(ECHO) clean dependency and object ...
@@ -164,16 +155,5 @@ document:
 	@$(ECHO) Done.
 
 openocd:
-	@$(OPENOCD) -f $(PROJECT_OPENOCD_CONFIG) 
-	
-ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(MAKECMDGOALS),flash)
-ifneq ($(MAKECMDGOALS),document)
-ifneq ($(MAKECMDGOALS),dis)
-ifneq ($(MAKECMDGOALS),openocd)
-sinclude $(DEPENDS_S) $(DEPENDS_C)
-endif
-endif
-endif
-endif
-endif
+	@$(OPENOCD) -f $(PROJECT_OPENOCD_CONFIG)
+
